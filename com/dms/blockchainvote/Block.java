@@ -9,7 +9,7 @@ public class Block {
     private String currentHash;
     private String prevBlockHash;
     private Date time;
-    private HashTree VoteData;
+    private HashTree voteData;
 
     /**
      * Constructor of Block
@@ -20,7 +20,7 @@ public class Block {
     public Block(String prevBlockHash, Date time, List<String> voteData){
         this.prevBlockHash = prevBlockHash;
         this.time = time;
-        this.VoteData = new HashTree(voteData);
+        this.voteData = new HashTree(voteData);
         this.currentHash = calcBlockHash();
     }
 
@@ -41,9 +41,12 @@ public class Block {
      * @return Block Hash value as String
      */
     private String calcBlockHash(){
-        //Test
-        String hash = "--";
+        String block = prevBlockHash + time.toString() + voteData.getRootHash();
+        currentHash = Hash.hashSHA256(block);
+        return currentHash;
+    }
 
-        return hash;
+    public HashTree getVoteData(){
+        return voteData;
     }
 }
