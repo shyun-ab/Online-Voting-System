@@ -5,8 +5,10 @@ import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,7 +70,11 @@ public class Block {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             writer.write(gson.toJson(this));
         } catch (IOException e) {
-            //check.
+            File blockDirectory = new File("block");
+            if(!blockDirectory.exists()){
+                blockDirectory.mkdir();
+                saveBlock();
+            }
         }
     }
 
