@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Block {
 
-    private String currentHash;
+    private String blockHash;
     private String prevBlockHash;
     private Date time;
     private HashTree voteData;
@@ -21,7 +21,7 @@ public class Block {
         this.prevBlockHash = prevBlockHash;
         this.time = time;
         this.voteData = new HashTree(voteData);
-        this.currentHash = calcBlockHash();
+        this.blockHash = calcBlockHash();
     }
 
     /**
@@ -29,7 +29,7 @@ public class Block {
      * @return validity of Block
      */
     public boolean isValid(){
-        if(currentHash.equals(calcBlockHash())){
+        if(blockHash.equals(calcBlockHash())){
             //check prevBlock
             return true;
         }
@@ -38,15 +38,16 @@ public class Block {
 
     /**
      * Calculate Block Hash
-     * @return Block Hash value as String
      */
     private String calcBlockHash(){
         String block = prevBlockHash + time.toString() + voteData.getRootHash();
-        currentHash = Hash.hashSHA256(block);
-        return currentHash;
+        return Hash.hashSHA256(block);
     }
 
     public HashTree getVoteData(){
         return voteData;
+    }
+    public String getBlockHash() {
+        return blockHash;
     }
 }
