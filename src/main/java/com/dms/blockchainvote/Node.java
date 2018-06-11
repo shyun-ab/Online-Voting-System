@@ -7,6 +7,7 @@ import java.util.List;
 public class Node {
     private String currentBlock;
     private List<String> voteList;
+    private static final int blockSize = 2;
 
     public Node(){
         currentBlock = "0";
@@ -20,7 +21,7 @@ public class Node {
 
     public void vote(String voteData){
         voteList.add(voteData);
-        if(voteList.size() >= 2){
+        if(voteList.size() >= blockSize){
             createBlock();
             voteList = new ArrayList<>();
         }
