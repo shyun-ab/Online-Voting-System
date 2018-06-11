@@ -26,4 +26,9 @@ public class Node {
             voteList = new ArrayList<>();
         }
     }
+
+    public boolean hasValidBlock(){
+        Block block = Block.loadBlock(currentBlock);
+        return block.isValid();
+    }
 }
