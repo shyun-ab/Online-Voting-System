@@ -43,7 +43,7 @@ public class KeyLoader {
 		return key;
 	}
 	
-	//ºí·Ï¿¡¼­ °¡Á®¿Â ¾ÏÈ£È­µÈ ÈÄº¸ÀÚ Á¤º¸¸¦ ¹Ş¾Æ º¹È£È­ÇÏ´Â ¸Ş¼Òµå
+	//ë¸”ë¡ì—ì„œ ê°€ì ¸ì˜¨ ì•”í˜¸í™”ëœ í›„ë³´ì ì •ë³´ë¥¼ ë°›ì•„ ë³µí˜¸í™”í•˜ëŠ” ë©”ì†Œë“œ
 	public String decode(String sCipher) {
 		String candidate;
 		try {
@@ -53,9 +53,7 @@ public class KeyLoader {
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
 			byte[] bCandidate = cipher.doFinal(bCipher);
 			candidate = new String(bCandidate);
-		} catch (NoSuchAlgorithmException e) {
-			candidate = null;
-		} catch (InvalidKeyException e) {
+		} catch (Exception e) {
 			candidate = null;
 		}
 		

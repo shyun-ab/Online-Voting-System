@@ -8,10 +8,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -101,8 +101,19 @@ public class Block {
         return Hash.hashSHA256(block);
     }
 
-    public HashTree getVoteData() {
-        return voteData;
+    /**
+     * get voteData recursively on block
+     * @return voteData before this node
+     */
+    public List<String> getVoteData(){
+        List<String> totalVoteData;
+        Block prevBlock = Block.loadBlock(prevBlockHash);
+        if(prevBlock == null){
+            return new ArrayList<>();
+        }
+        totalVoteData = prevBlock.getVoteData();
+        totalVoteData.addAll(this.voteData.getData());
+        return totalVoteData;
     }
 
     public String getBlockHash() {

@@ -65,9 +65,7 @@ public class KeyMaker {
 			byte[] bCipher = cipher.doFinal(candidate.getBytes());
 			
 			sCipherBase64 = Base64.encodeBase64String(bCipher);
-		} catch (NoSuchAlgorithmException e) {
-			sCipherBase64 = null;
-		} catch (InvalidKeyException e) {
+		}catch (Exception e) {
 			sCipherBase64 = null;
 		}
 		return sCipherBase64;
