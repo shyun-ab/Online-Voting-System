@@ -15,7 +15,6 @@ public class Node {
 
     public Node(){
         currentBlock = "0";
-        maker = new KeyMaker();
         voteList = new ArrayList<>();
         publicKeys = new ArrayList<>();
     }
@@ -26,6 +25,7 @@ public class Node {
     }
 
     public void vote(String voteData){
+    	maker = new KeyMaker();
     	String encodedVoteData = maker.encode(voteData);
     	String sPublicKey = maker.getSPublicKey();
         voteList.add(encodedVoteData);
@@ -33,6 +33,7 @@ public class Node {
         if(voteList.size() >= blockSize){
             createBlock();
             voteList = new ArrayList<>();
+            publicKeys = new ArrayList<>();
         }
     }
 
