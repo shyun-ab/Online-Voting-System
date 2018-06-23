@@ -22,6 +22,8 @@ public class Node {
     public void createBlock(){
         Block block = new Block(currentBlock, new Date(), voteList, publicKeys);
         currentBlock = block.getBlockHash();
+        voteList = new ArrayList<>();
+        publicKeys = new ArrayList<>();
     }
 
     public void vote(String voteData){
@@ -32,8 +34,6 @@ public class Node {
         publicKeys.add(sPublicKey);
         if(voteList.size() >= blockSize){
             createBlock();
-            voteList = new ArrayList<>();
-            publicKeys = new ArrayList<>();
         }
     }
 
@@ -42,6 +42,9 @@ public class Node {
      * @return winner as String;
      */
     public String statVote(){
+        if(voteList.size() > 0){
+            createBlock();
+        }
         KeyLoader loader;
         Block block = Block.loadBlock(currentBlock);
         List<String> encodedVoteData = block.getVoteData();

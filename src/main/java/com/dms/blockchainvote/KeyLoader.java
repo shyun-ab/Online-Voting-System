@@ -1,4 +1,4 @@
-﻿package com.dms.blockchainvote;
+package com.dms.blockchainvote;
 
 import java.io.*;
 import java.security.*;
