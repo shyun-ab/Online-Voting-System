@@ -22,6 +22,7 @@ public class Block {
     private String prevBlockHash;
     private Date time;
     private HashTree voteData;
+    private List<String> publicKeys;
 
     /**
      * Constructor of Block
@@ -30,10 +31,11 @@ public class Block {
      * @param time          Block generate time
      * @param voteData      list of vote data
      */
-    public Block(String prevBlockHash, Date time, List<String> voteData) {
+    public Block(String prevBlockHash, Date time, List<String> voteData, List<String> publicKeys) {
         this.prevBlockHash = prevBlockHash;
         this.time = time;
         this.voteData = new HashTree(voteData);
+        this.publicKeys = publicKeys;
         this.blockHash = calcBlockHash();
         this.saveBlock();
 
@@ -108,12 +110,26 @@ public class Block {
     public List<String> getVoteData(){
         List<String> totalVoteData;
         Block prevBlock = Block.loadBlock(prevBlockHash);
-        if(prevBlock == null){
-            return new ArrayList<>();
+        if(prevBlock != null){
+        	totalVoteData = prevBlock.getVoteData();
+        } else {
+        	totalVoteData = new ArrayList<>();
         }
-        totalVoteData = prevBlock.getVoteData();
         totalVoteData.addAll(this.voteData.getData());
         return totalVoteData;
+    }
+    
+    //same way to get (string) public keys as getVoteData()
+    public List<String> getSPublicKeys(){
+        List<String> totalSPublicKeys;
+        Block prevBlock = Block.loadBlock(prevBlockHash);
+        if(prevBlock != null){
+        	totalSPublicKeys = prevBlock.getSPublicKeys();
+        } else {
+        	totalSPublicKeys = new ArrayList<>();
+        }
+        totalSPublicKeys.addAll(this.publicKeys);
+        return totalSPublicKeys;
     }
 
     public String getBlockHash() {

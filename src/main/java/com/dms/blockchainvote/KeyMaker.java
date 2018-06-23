@@ -1,4 +1,4 @@
-package com.dms.blockchainvote;
+﻿package com.dms.blockchainvote;
 
 import java.io.*;
 import java.security.*;
@@ -16,7 +16,6 @@ public class KeyMaker {
 		this.keypair = makeKeyPair();
 		this.publicKey = getPublicKey();
 		this.privateKey = getPrivateKey();
-		this.savePublicToText();
 	}
 	
 	public KeyPair makeKeyPair() {
@@ -41,22 +40,14 @@ public class KeyMaker {
 		return keypair.getPrivate();
 	}
 	
-	public void savePublicToText() {
+	public String getSPublicKey() {
 		byte[] bPublicKey = publicKey.getEncoded();
 		String sPublicKey = Base64.encodeBase64String(bPublicKey);
 		
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("PublicKeys.txt"));
-			bw.write(sPublicKey);
-			bw.newLine();
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		return sPublicKey;
 	}
 	
-	//후보자 정보를 받아서 암호화하는 메소드
-	public String incode(String candidate) {
+	public String encode(String candidate) {
 		String sCipherBase64;
 		try {
 			Cipher cipher = Cipher.getInstance("RSA");

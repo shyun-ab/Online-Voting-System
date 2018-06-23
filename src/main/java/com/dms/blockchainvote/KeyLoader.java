@@ -1,4 +1,4 @@
-package com.dms.blockchainvote;
+﻿package com.dms.blockchainvote;
 
 import java.io.*;
 import java.security.*;
@@ -9,26 +9,13 @@ import org.apache.commons.codec.binary.Base64;
 public class KeyLoader {
 	private PublicKey publicKey;
 	
-	public KeyLoader() {
-		this.publicKey = loadKey();
+	public KeyLoader(String sPublicKey) {
+		this.publicKey = loadKey(sPublicKey);
 	}
 	
-	public PublicKey loadKey() {
+	public PublicKey loadKey(String sPublicKey) {
 		PublicKey key;
-		String sPublicKey = null;
 		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader("PublicKeys.txt"));
-			sPublicKey = br.readLine();
-		} catch (IOException e) {
-			sPublicKey = null;
-		} finally {
-			try {
-				if(br != null) br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		
 		byte[] bPublicKey = Base64.decodeBase64(sPublicKey.getBytes());
 		
@@ -43,7 +30,6 @@ public class KeyLoader {
 		return key;
 	}
 	
-	//블록에서 가져온 암호화된 후보자 정보를 받아 복호화하는 메소드
 	public String decode(String sCipher) {
 		String candidate;
 		try {
@@ -57,6 +43,7 @@ public class KeyLoader {
 			candidate = null;
 		}
 		
+		System.out.println(candidate);
 		return candidate;
 	}
 }
