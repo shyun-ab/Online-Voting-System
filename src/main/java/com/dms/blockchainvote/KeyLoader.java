@@ -43,7 +43,6 @@ public class KeyLoader {
 			candidate = null;
 		}
 		
-		System.out.println(candidate);
 		return candidate;
 	}
 }
