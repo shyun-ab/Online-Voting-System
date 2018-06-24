@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 public class Client extends Thread {
     private Socket mSocket;
@@ -21,9 +20,9 @@ public class Client extends Thread {
     public Client(){
     }
 
-    public void connect(String server){
+    private void connect(String server){
         try {
-            if(!server.contains(";")){
+            if(!server.contains(":")){
                 return;
             }
             String[] addr = server.split(":");
@@ -31,11 +30,11 @@ public class Client extends Thread {
             mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
             mOut = new PrintWriter(mSocket.getOutputStream());
         }catch(IOException e){
-
+            e.printStackTrace();
         }
     }
 
-    public void disconnect(){
+    private void disconnect(){
         try{
             mSocket.close();
         } catch (IOException e){

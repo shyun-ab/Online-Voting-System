@@ -21,7 +21,7 @@ public class Node extends Thread{
     private List<String> publicKeys;
     private static final int blockSize = 2;
 
-    private Client client;
+    private Client client = new Client();
 
 
     public Node(){
@@ -37,7 +37,7 @@ public class Node extends Thread{
         BufferedReader mIn;
         PrintWriter mOut;
         try {
-            mServerSocket = new ServerSocket(9000);
+            mServerSocket = new ServerSocket(9001);
             while(true) {
                 mSocket = mServerSocket.accept();
 
@@ -82,6 +82,7 @@ public class Node extends Thread{
         currentBlock = block.getBlockHash();
         voteList = new ArrayList<>();
         publicKeys = new ArrayList<>();
+        client.updateCurrentBlock(currentBlock);
     }
 
     public void vote(String voteData){
