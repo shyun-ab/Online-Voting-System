@@ -13,14 +13,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Client extends Thread {
-    private Socket mSocket;
-    private BufferedReader mIn;
-    private PrintWriter mOut;
+    private static Socket mSocket;
+    private static BufferedReader mIn;
+    private static PrintWriter mOut;
 
-    public Client(){
-    }
-
-    private void connect(String server){
+    private static void connect(String server){
         try {
             if(!server.contains(":")){
                 return;
@@ -34,7 +31,7 @@ public class Client extends Thread {
         }
     }
 
-    private void disconnect(){
+    private static void disconnect(){
         try{
             mSocket.close();
         } catch (IOException e){
@@ -42,7 +39,7 @@ public class Client extends Thread {
         }
     }
 
-    public void updateCurrentBlock(String currentBlock){
+    public static void updateCurrentBlock(String currentBlock){
         String[] serverList = loadServerList();
         for(String server : serverList){
             connect(server);
@@ -53,7 +50,7 @@ public class Client extends Thread {
         }
     }
 
-    public Node requestBlock(String blockHash){
+    public static Block requestBlock(String blockHash){
         String[] serverList = loadServerList();
         for(String server : serverList){
             connect(server);
@@ -62,9 +59,12 @@ public class Client extends Thread {
             mOut.flush();
             try {
                 String result = mIn.readLine();
+                disconnect();
                 if(!result.equals("null")){
                     Gson gson = new Gson();
-                    return gson.fromJson(result, Node.class);
+                    Block block = gson.fromJson(result, Block.class);
+                    block.saveBlock();
+                    return block;
                 }
             }catch (IOException e){
 
@@ -73,26 +73,27 @@ public class Client extends Thread {
         return null;
     }
 
-    public String checkBlock(){
+    public static String checkBlock(){
         String[] serverList = loadServerList();
         for(String server: serverList){
             connect(server);
             mOut.println("check");
             mOut.flush();
+            disconnect();
         }
 
         return "";
     }
 
-    private String[] loadServerList(){
-        String[] serverlist;
+    private static String[] loadServerList(){
+        String[] serverList;
         Gson gson = new Gson();
         Path path = FileSystems.getDefault().getPath("server.json");
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            serverlist = gson.fromJson(br, String[].class);
+            serverList = gson.fromJson(br, String[].class);
         } catch (IOException e) {
-            serverlist = null;
+            serverList = null;
         }
-        return serverlist;
+        return serverList;
     }
 }

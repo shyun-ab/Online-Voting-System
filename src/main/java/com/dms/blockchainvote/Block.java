@@ -39,6 +39,7 @@ public class Block {
         this.blockHash = calcBlockHash();
         this.saveBlock();
 
+        //TestPrint
         System.out.println("===== New Block Generated =====");
         System.out.println("Block Hash : " + blockHash);
         System.out.println("Previous Block Hash : " + this.prevBlockHash);
@@ -57,11 +58,16 @@ public class Block {
         Block block;
         Gson gson = new Gson();
         Path path = FileSystems.getDefault().getPath("block/" + blockHash);
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            block = gson.fromJson(br, Block.class);
-        } catch (IOException e) {
-            block = null;
+        if(path.toFile().exists()){
+            try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+                block = gson.fromJson(br, Block.class);
+            } catch (IOException e) {
+                block = null;
+            }
+        }else{
+            block = Client.requestBlock(blockHash);
         }
+
         return block;
     }
 
@@ -109,8 +115,8 @@ public class Block {
      */
     public List<String> getVoteData(){
         List<String> totalVoteData;
-        Block prevBlock = Block.loadBlock(prevBlockHash);
-        if(prevBlock != null){
+        if(!prevBlockHash.equals("0")){
+            Block prevBlock = Block.loadBlock(prevBlockHash);
         	totalVoteData = prevBlock.getVoteData();
         } else {
         	totalVoteData = new ArrayList<>();
@@ -122,8 +128,9 @@ public class Block {
     //same way to get (string) public keys as getVoteData()
     public List<String> getSPublicKeys(){
         List<String> totalSPublicKeys;
-        Block prevBlock = Block.loadBlock(prevBlockHash);
-        if(prevBlock != null){
+
+        if(!prevBlockHash.equals("0")){
+            Block prevBlock = Block.loadBlock(prevBlockHash);
         	totalSPublicKeys = prevBlock.getSPublicKeys();
         } else {
         	totalSPublicKeys = new ArrayList<>();

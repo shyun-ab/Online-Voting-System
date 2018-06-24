@@ -19,15 +19,14 @@ public class Node extends Thread{
     private KeyMaker maker;
     private List<String> voteList;
     private List<String> publicKeys;
+    private int port;
     private static final int blockSize = 2;
 
-    private Client client = new Client();
-
-
-    public Node(){
+    public Node(int port){
         currentBlock = "0";
         voteList = new ArrayList<>();
         publicKeys = new ArrayList<>();
+        this.port = port;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class Node extends Thread{
         BufferedReader mIn;
         PrintWriter mOut;
         try {
-            mServerSocket = new ServerSocket(9001);
+            mServerSocket = new ServerSocket(port);
             while(true) {
                 mSocket = mServerSocket.accept();
 
@@ -50,10 +49,10 @@ public class Node extends Thread{
                     switch (data) {
                         case "update":
                             currentBlock = mIn.readLine();
+                            Client.requestBlock(currentBlock);
                             break;
                         case "request":
                             String requestBlockHash = mIn.readLine();
-                            System.out.println("requsetblock : " + requestBlockHash);
                             Block requestBlock = Block.loadBlock(requestBlockHash);
                             if(requestBlock == null){
                                 mOut.println("null");
@@ -71,6 +70,8 @@ public class Node extends Thread{
                             break;
                     }
                 }
+
+                mSocket.close();
             }
         } catch(IOException e) {
             e.printStackTrace();
@@ -82,7 +83,7 @@ public class Node extends Thread{
         currentBlock = block.getBlockHash();
         voteList = new ArrayList<>();
         publicKeys = new ArrayList<>();
-        client.updateCurrentBlock(currentBlock);
+        Client.updateCurrentBlock(currentBlock);
     }
 
     public void vote(String voteData){
