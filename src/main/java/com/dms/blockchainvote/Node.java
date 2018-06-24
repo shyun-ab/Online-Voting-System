@@ -1,22 +1,80 @@
 package com.dms.blockchainvote;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.List;
 
-public class Node {
+public class Node extends Thread{
     private String currentBlock;
     private KeyMaker maker;
     private List<String> voteList;
     private List<String> publicKeys;
     private static final int blockSize = 2;
 
+    private Client client;
+
+
     public Node(){
         currentBlock = "0";
         voteList = new ArrayList<>();
         publicKeys = new ArrayList<>();
+    }
+
+    @Override
+    public void run(){
+        ServerSocket mServerSocket;
+        Socket mSocket;
+        BufferedReader mIn;
+        PrintWriter mOut;
+        try {
+            mServerSocket = new ServerSocket(9000);
+            while(true) {
+                mSocket = mServerSocket.accept();
+
+                mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+                mOut = new PrintWriter(mSocket.getOutputStream());
+
+                //socket function.
+                String data;
+                while ((data = mIn.readLine()) != null) {
+                    switch (data) {
+                        case "update":
+                            currentBlock = mIn.readLine();
+                            break;
+                        case "request":
+                            String requestBlockHash = mIn.readLine();
+                            System.out.println("requsetblock : " + requestBlockHash);
+                            Block requestBlock = Block.loadBlock(requestBlockHash);
+                            if(requestBlock == null){
+                                mOut.println("null");
+                            }else {
+                                Gson gson = new Gson();
+                                mOut.println(gson.toJson(requestBlock));
+                            }
+                            mOut.flush();
+                            break;
+                        case "check" :
+                            mOut.println(this.currentBlock);
+                            mOut.flush();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void createBlock(){
@@ -42,7 +100,7 @@ public class Node {
      * @return winner as String;
      */
     public String statVote(){
-        if(voteList.size() > 0){
+        if(!voteList.isEmpty()){
             createBlock();
         }
         KeyLoader loader;
