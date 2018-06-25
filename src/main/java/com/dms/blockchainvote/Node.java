@@ -1,17 +1,13 @@
 package com.dms.blockchainvote;
 
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.List;
 
 public class Node extends Thread{
@@ -75,12 +71,11 @@ public class Node extends Thread{
             createBlock();
         }
         KeyLoader loader;
-        Block block = Block.loadBlock(currentBlock);
+        Block block = Block.loadBlock(Client.checkBlock());
         List<String> encodedVoteData = block.getVoteData();
         List<String> sPublicKeys = block.getSPublicKeys();
         List<String> voteData = new ArrayList<>();
         HashMap<String, Integer> statTable = new HashMap<>();
-        String winner = "";
         
         for(int i = 0; i < encodedVoteData.size(); i++) {
         	loader = new KeyLoader(sPublicKeys.get(i));

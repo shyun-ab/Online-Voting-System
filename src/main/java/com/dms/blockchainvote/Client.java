@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Client extends Thread {
     private static Socket mSocket;
@@ -75,14 +77,34 @@ public class Client extends Thread {
 
     public static String checkBlock(){
         String[] serverList = loadServerList();
+        HashMap<String, Integer> currentBlockHashTable =new HashMap<>();
         for(String server: serverList){
-            connect(server);
-            mOut.println("check");
-            mOut.flush();
-            disconnect();
+            try {
+                connect(server);
+                mOut.println("check");
+                mOut.flush();
+                String currentBlockHash = mIn.readLine();
+                if(currentBlockHashTable.containsKey(currentBlockHash)){
+                    currentBlockHashTable.put(currentBlockHash, currentBlockHashTable.get(currentBlockHash) + 1);
+                }else{
+                    currentBlockHashTable.put(currentBlockHash, 1);
+                }
+            }catch (Exception e){
+
+            }finally {
+                disconnect();
+            }
+
         }
 
-        return "";
+        int max = 0;
+        String selectedBlockHash = null;
+        for(Map.Entry<String, Integer> entry : currentBlockHashTable.entrySet()){
+            if(entry.getValue() > max){
+                selectedBlockHash = entry.getKey();
+            }
+        }
+        return selectedBlockHash;
     }
 
     private static String[] loadServerList(){
