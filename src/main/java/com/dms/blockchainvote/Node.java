@@ -39,39 +39,8 @@ public class Node extends Thread{
             mServerSocket = new ServerSocket(port);
             while(true) {
                 mSocket = mServerSocket.accept();
-
-                mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-                mOut = new PrintWriter(mSocket.getOutputStream());
-
-                //socket function.
-                String data;
-                while ((data = mIn.readLine()) != null) {
-                    switch (data) {
-                        case "update":
-                            currentBlock = mIn.readLine();
-                            Client.requestBlock(currentBlock);
-                            break;
-                        case "request":
-                            String requestBlockHash = mIn.readLine();
-                            Block requestBlock = Block.loadBlock(requestBlockHash);
-                            if(requestBlock == null){
-                                mOut.println("null");
-                            }else {
-                                Gson gson = new Gson();
-                                mOut.println(gson.toJson(requestBlock));
-                            }
-                            mOut.flush();
-                            break;
-                        case "check" :
-                            mOut.println(this.currentBlock);
-                            mOut.flush();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                mSocket.close();
+                NodeThread nodeThread = new NodeThread(mSocket, this);
+                nodeThread.start();
             }
         } catch(IOException e) {
             e.printStackTrace();
@@ -140,5 +109,13 @@ public class Node extends Thread{
     public boolean hasValidBlock(){
         Block block = Block.loadBlock(currentBlock);
         return block.isValid();
+    }
+
+    public String getCurrentBlock(){
+        return currentBlock;
+    }
+
+    public void setCurrentBlock(String currentBlock){
+        this.currentBlock = currentBlock;
     }
 }

@@ -71,6 +71,23 @@ public class Block {
         return block;
     }
 
+    public static Block loadLocalBlock(String blockHash) {
+        Block block = null;
+        Gson gson = new Gson();
+        Path path = FileSystems.getDefault().getPath("block/" + blockHash);
+        if(path.toFile().exists()){
+            try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+                block = gson.fromJson(br, Block.class);
+            } catch (IOException e) {
+                block = null;
+            }
+        }
+
+        return block;
+    }
+
+
+
     public void saveBlock(){
         Path path = FileSystems.getDefault().getPath("block/" + blockHash);
 

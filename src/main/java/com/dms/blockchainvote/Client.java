@@ -18,11 +18,11 @@ public class Client extends Thread {
     private static PrintWriter mOut;
 
     private static void connect(String server){
+        if(!server.contains(":")){
+            return;
+        }
+        String[] addr = server.split(":");
         try {
-            if(!server.contains(":")){
-                return;
-            }
-            String[] addr = server.split(":");
             mSocket = new Socket(addr[0], Integer.parseInt(addr[1]));
             mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
             mOut = new PrintWriter(mSocket.getOutputStream());
@@ -31,7 +31,7 @@ public class Client extends Thread {
         }
     }
 
-    private static void disconnect(){
+    public static void disconnect(){
         try{
             mSocket.close();
         } catch (IOException e){
