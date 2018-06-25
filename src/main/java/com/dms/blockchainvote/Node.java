@@ -70,7 +70,7 @@ public class Node extends Thread{
      * get Winner of this vote.
      * @return winner as String;
      */
-    public String statVote(){
+    public HashMap<String, Integer> statVote(){
         if(!voteList.isEmpty()){
             createBlock();
         }
@@ -95,15 +95,7 @@ public class Node extends Thread{
             }
         }
 
-        int max = 0;
-        for(Entry<String, Integer> cadi : statTable.entrySet()){
-            if(cadi.getValue() > max){
-                winner = cadi.getKey();
-                max = cadi.getValue();
-            }
-        }
-
-        return winner;
+        return statTable;
     }
 
     public boolean hasValidBlock(){

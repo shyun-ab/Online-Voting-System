@@ -1,5 +1,7 @@
 package com.dms.blockchainvote;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -18,7 +20,12 @@ public class Main {
                         node.vote(sc.nextLine());
                         break;
                     case "stat":
-                        System.out.println(node.statVote());
+                        HashMap<String, Integer> stat = node.statVote();
+                        System.out.println("=====Result=====");
+                        for(Map.Entry<String, Integer> entry : stat.entrySet()){
+                            System.out.println(entry.getKey() + "-" + entry.getValue());
+                        }
+                        System.out.println("================");
                         break;
                     case "exit" :
                         System.out.println("Exit");
