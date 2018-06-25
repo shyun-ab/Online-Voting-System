@@ -109,13 +109,7 @@ public class Block {
      * @return validity of Block
      */
     public boolean isValid() {
-        if (blockHash.equals(calcBlockHash())) {
-            if(prevBlockHash.equals("0")){
-                return true;
-            }
-            return Block.loadBlock(prevBlockHash).isValid();
-        }
-        return false;
+        return blockHash.equals(calcBlockHash());
     }
 
     /**
@@ -133,8 +127,13 @@ public class Block {
     public List<String> getVoteData(){
         List<String> totalVoteData;
         if(!prevBlockHash.equals("0")){
-            Block prevBlock = Block.loadBlock(prevBlockHash);
-        	totalVoteData = prevBlock.getVoteData();
+            Block prevBlock;
+            if(this.isValid()) {
+                prevBlock = Block.loadBlock(prevBlockHash);
+            }else{
+                prevBlock = Client.requestBlock(prevBlockHash);
+            }
+            totalVoteData = prevBlock.getVoteData();
         } else {
         	totalVoteData = new ArrayList<>();
         }
