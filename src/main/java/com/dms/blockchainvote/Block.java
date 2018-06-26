@@ -127,10 +127,8 @@ public class Block {
     public List<String> getVoteData(){
         List<String> totalVoteData;
         if(!prevBlockHash.equals("0")){
-            Block prevBlock;
-            if(this.isValid()) {
-                prevBlock = Block.loadBlock(prevBlockHash);
-            }else{
+            Block prevBlock = Block.loadBlock(prevBlockHash);
+            if(!prevBlock.isValid()){
                 prevBlock = Client.requestBlock(prevBlockHash);
             }
             totalVoteData = prevBlock.getVoteData();
@@ -147,6 +145,9 @@ public class Block {
 
         if(!prevBlockHash.equals("0")){
             Block prevBlock = Block.loadBlock(prevBlockHash);
+            if(!prevBlock.isValid()){
+                prevBlock = Client.requestBlock(prevBlockHash);
+            }
         	totalSPublicKeys = prevBlock.getSPublicKeys();
         } else {
         	totalSPublicKeys = new ArrayList<>();

@@ -67,16 +67,23 @@ public class Node extends Thread{
      * @return winner as String;
      */
     public HashMap<String, Integer> statVote(){
+        List<String> encodedVoteData;
+        List<String> sPublicKeys;
+
         if(!voteList.isEmpty()){
             createBlock();
         }
         KeyLoader loader;
-        Block block = Block.loadBlock(Client.checkBlock(currentBlock));
-        List<String> encodedVoteData = block.getVoteData();
-        List<String> sPublicKeys = block.getSPublicKeys();
+        String lateste = Client.checkBlock(currentBlock);
+        Block block = Block.loadBlock(lateste);
+        if(!block.isValid()) {
+            block = Client.requestBlock(currentBlock);
+        }
+        encodedVoteData = block.getVoteData();
+        sPublicKeys = block.getSPublicKeys();
         List<String> voteData = new ArrayList<>();
         HashMap<String, Integer> statTable = new HashMap<>();
-        
+
         for(int i = 0; i < encodedVoteData.size(); i++) {
         	loader = new KeyLoader(sPublicKeys.get(i));
         	voteData.add(loader.decode(encodedVoteData.get(i)));
