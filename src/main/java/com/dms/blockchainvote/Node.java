@@ -71,7 +71,7 @@ public class Node extends Thread{
             createBlock();
         }
         KeyLoader loader;
-        Block block = Block.loadBlock(Client.checkBlock());
+        Block block = Block.loadBlock(Client.checkBlock(currentBlock));
         List<String> encodedVoteData = block.getVoteData();
         List<String> sPublicKeys = block.getSPublicKeys();
         List<String> voteData = new ArrayList<>();

@@ -75,9 +75,10 @@ public class Client extends Thread {
         return null;
     }
 
-    public static String checkBlock(){
+    public static String checkBlock(String clientBlock){
         String[] serverList = loadServerList();
         HashMap<String, Integer> currentBlockHashTable =new HashMap<>();
+        currentBlockHashTable.put(clientBlock, 1);
         for(String server: serverList){
             try {
                 connect(server);
@@ -102,6 +103,7 @@ public class Client extends Thread {
         for(Map.Entry<String, Integer> entry : currentBlockHashTable.entrySet()){
             if(entry.getValue() > max){
                 selectedBlockHash = entry.getKey();
+                max = entry.getValue();
             }
         }
         return selectedBlockHash;
